@@ -2,12 +2,18 @@
 # Imports
 #----------------------------------------------------------------------------#
 
+import uuid
+
+import flask
 from flask import Flask, render_template, request
-# from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
+
+import openpyxl
+
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -15,7 +21,7 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -43,12 +49,9 @@ def login_required(test):
 
 @app.route('/')
 def home():
+    if 'uid' not in flask.session:
+        flask.session['id'] = str(uuid.uuid4())
     return render_template('pages/placeholder.home.html')
-
-
-@app.route('/about')
-def about():
-    return render_template('pages/placeholder.about.html')
 
 
 @app.route('/login')
@@ -68,9 +71,64 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
+
+@app.route('/shipments', methods=['GET'])
+def shipments():
+    filename = flask.session['id']
+    '''
+    if not os.path.contains():
+        flash("Session not found")
+    '''
+    return render_template('pages/upload_shipment.html')
+
+@app.route('/shipments/complete', methods=['POST'])
+def complete_shipments():
+    boxes = [{
+        "box_number": 1,
+        "items": [{
+            "UPC": "12345789",
+            "quantity": 1
+        }],
+        "weight": 12,
+        "length": 12,
+        "width": 12,
+        "height": 12
+        }]
+    box_offset = 11
+
+    filename = flask.session['id']
+    with open('fba/' + filename) as f:
+        for box in boxes:
+            pass
+        '''
+        from openpyxl import load_workbook
+        #Open an xlsx for reading
+        wb = load_workbook(filename = dest)
+        #Get the current Active Sheet
+        ws = wb.get_active_sheet()
+        #You can also select a particular sheet
+        #based on sheet name
+        #ws = wb.get_sheet_by_name("Sheet1")
+        ws.cell(row=index,column=7).value = box["items"][0]["quantity"]
+        ws.cell(row=index,column=8).value = box["weight"]
+        wb.save(dest)
+        '''
+
+@app.route('/shipments', methods=['POST'])
+def upload_shipments():
+    fba_file = request.files['file']
+    # save to disk with session id
+    filename = flask.session['id']
+    fba_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    return render_template('pages/edit_shipment.html')
+
+@app.route('/shipments/box', methods=['POST'])
+def add_box():
+    return redirect('/shipments')
+
+
 # Error handlers.
-
-
 @app.errorhandler(500)
 def internal_error(error):
     #db_session.rollback()

@@ -1,0 +1,14 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Complete Shipment{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Complete Shipment</h1>
+  <div>
+    <form method="POST" action="/shipments/complete">
+	<input type="submit" value="Complete shipment"/>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

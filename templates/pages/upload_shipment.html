@@ -1,0 +1,15 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Add Shipment{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Add Shipment</h1>
+  <div>
+    <form method="POST" action="/shipments" enctype="multipart/form-data">
+	<input type="file" name="file"/>
+	<input type="submit" name="Upload"/>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

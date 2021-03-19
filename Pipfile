@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[requires]
+python_version = '3.8.5'
+
+[packages]
+flask = '==1.1.2'
+openpyxl = '==3.0.7'
+Fabric = '==2.6.0'
+Flask-SQLAlchemy = '==2.5.1'
+Flask-WTF = '==0.14.3'
+WTForms = '==2.3.3'
+# ecdsa
+# paramiko
+# pycrypto
+
+[dev-packages]
+ipdb = '==0.12'
