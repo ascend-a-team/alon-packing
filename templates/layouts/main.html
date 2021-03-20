@@ -56,6 +56,7 @@
           <ul class="nav navbar-nav">
             <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
             <li {% if request.endpoint == 'shipments' %} class="active" {% endif %}><a href="{{ url_for('shipments') }}">Shipments</a></li>
+            <li><a href="/shipments/download">Download</a></li>
           </ul>
           <ul class="nav navbar-nav pull-right">
             <li><a href="{{ url_for('register') }}">Signup</a></li>
