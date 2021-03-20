@@ -1,0 +1,96 @@
+{% extends 'layouts/main.html' %} {% block title %}Pack shipment{% endblock %}
+{% block head %} {% endblock%} {% block content %}
+<div id="shipment">
+  <!-- multistep form -->
+  <form id="msform">
+    <fieldset id="start-packing-fs">
+      <h2 class="fs-title">Shipment ID: 1234798</h2>
+      <input
+	id="start-packing"
+        type="button"
+        class="action-button"
+        value="Start Packing"
+      />
+    </fieldset>
+    <fieldset id="scan-item-fs">
+      <h2 class="fs-title" id="box-scan-number">Box 1</h2>
+      <input
+	id="scan-item"
+        type="button"
+        class="action-button"
+        value="Scan Item"
+      />
+    </fieldset>
+    <fieldset id="item-confirmation-fs">
+      <div id="item-upc"></div>
+      <input
+        type="button"
+        class="review-box action-button"
+        value="Finish Box"
+      />
+      <input
+        type="button"
+        class="add-item action-button"
+        value="Scan Next Item"
+      />
+    </fieldset>
+    <fieldset id="box-review-fs">
+      <h2 class="fs-title">Box Review</h2>
+      <div id="box-summary">
+      </div>
+
+      <input
+	id="box-info"
+        class="action-button"
+        value="Input Box Info"
+      />
+      <input
+        type="button"
+        class="add-item action-button"
+        value="Scan more items"
+      />
+    </fieldset>
+    <fieldset id="box-info-fs">
+      <h2 class="fs-title">Box Info</h2>
+      <input type="number" name="boxWeight" placeholder="Weight" />
+      <input type="number" name="boxHeight" placeholder="Height" />
+      <input type="number" name="boxWidth" placeholder="Width" />
+      <input type="number" name="boxLength" placeholder="Length" />
+      <input
+        type="button"
+        class="review-box action-button"
+        value="Back"
+      />
+      <input
+	id="finish-box"
+        class="action-button"
+        value="Finish Box"
+      />
+    </fieldset>
+    <fieldset id="complete-shipment-fs">
+      <h2 class="fs-title">Complete Box</h2>
+      <h3 id="units-packed">Units Packed: 30 / 50</h3>
+      <div id="shipment-summary">
+      </div>
+      <input
+	id="add-box"
+        type="button"
+        class="action-button"
+        value="Add Another Box"
+      />
+      <input
+	id="finish-shipment"
+        class="action-button"
+        value="Finish Shipment"
+      />
+    </fieldset>
+    <fieldset id="shipment-confirmation-fs">
+      <h2 class="fs-title">You have finished packing shipment ID: 11111</h2>
+      <div>Your download should be starting shortly.</div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %} {% block scripts %}
+<script type="text/javascript" src="/static/js/msform.js"></script>
+<script type="text/javascript" src="/static/js/app.js"></script>
+{% endblock %}

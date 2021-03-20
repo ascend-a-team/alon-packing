@@ -13,6 +13,7 @@ from forms import *
 import os
 
 import openpyxl
+from openpyxl import load_workbook
 
 
 #----------------------------------------------------------------------------#
@@ -81,6 +82,12 @@ def shipments():
     '''
     return render_template('pages/upload_shipment.html')
 
+@app.route('/shipments/pack', methods=['GET'])
+def shipments_pack():
+    # get count of units
+    # return to template
+    return render_template('pages/pack_shipment.html')
+
 @app.route('/shipments/complete', methods=['POST'])
 def complete_shipments():
     boxes = [{
@@ -96,12 +103,11 @@ def complete_shipments():
         }]
     box_offset = 11
 
-    filename = flask.session['id']
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id'])
     with open('fba/' + filename) as f:
         for box in boxes:
             pass
         '''
-        from openpyxl import load_workbook
         #Open an xlsx for reading
         wb = load_workbook(filename = dest)
         #Get the current Active Sheet
@@ -117,11 +123,16 @@ def complete_shipments():
 @app.route('/shipments', methods=['POST'])
 def upload_shipments():
     fba_file = request.files['file']
+    extension = fba_file.filename[fba_file.filename.rfind("."):]
     # save to disk with session id
-    filename = flask.session['id']
-    fba_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id']) + extension
+    fba_file.save(filename)
 
-    return render_template('pages/edit_shipment.html')
+    wb = load_workbook(filename=filename)
+    # count number of units in excel
+    flask.session["unit_count"] = 0 # set unit count
+
+    return render_template('pages/pack_shipment.html')
 
 @app.route('/shipments/box', methods=['POST'])
 def add_box():
