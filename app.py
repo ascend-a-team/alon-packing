@@ -81,6 +81,15 @@ def shipments():
     '''
     return render_template('pages/upload_shipment.html')
 
+@app.route('/shipments/scan', methods=['GET'])
+def scan():
+    filename = flask.session['id']
+    '''
+    if not os.path.contains():
+        flash("Session not found")
+    '''
+    return render_template('pages/scan_item.html')
+
 @app.route('/shipments/complete', methods=['POST'])
 def complete_shipments():
     boxes = [{

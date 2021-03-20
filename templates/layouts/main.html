@@ -54,6 +54,7 @@
           <ul class="nav navbar-nav">
             <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
             <li {% if request.endpoint == 'shipments' %} class="active" {% endif %}><a href="{{ url_for('shipments') }}">Shipments</a></li>
+            <li {% if request.endpoint == 'scan' %} class="active" {% endif %}><a href="{{ url_for('scan') }}">Scan</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -107,6 +108,10 @@
   <script type="text/javascript" src="/static/js/libs/bootstrap-3.1.1.min.js" defer></script>
   <script type="text/javascript" src="/static/js/plugins.js" defer></script>
   <script type="text/javascript" src="/static/js/script.js" defer></script>
+  <script src="//webrtc.github.io/adapter/adapter-latest.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/static/js/quagga.js" defer></script>
+  <script type="text/javascript" src="/static/js/scan-to-input.js" defer></script>
+  <script type="text/javascript" src="/static/js/prism.js" defer></script>
   <!-- Google Analytics - Change UA-XXXXX-X to be your site's ID -->
   <script>
   window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
