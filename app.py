@@ -11,12 +11,9 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
 import os
 import re
-
-import openpyxl
-from openpyxl import load_workbook
+import json
 
 
 #----------------------------------------------------------------------------#
@@ -102,41 +99,28 @@ def shipments_pack():
 
 @app.route('/shipments/complete', methods=['POST'])
 def complete_shipments():
-    boxes = [{
-        "box_number": 1,
-        "items": [{
-            "UPC": "808460022224",
-            "quantity": 1}, 
-            {"UPC": "808460037853",
-            "quantity": 1
-            }],
-        "weight": 12,
-        "length": 12,
-        "width": 12,
-        "height": 12
-        }]
-
-
+    boxes = request.get_json()
     filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id'])+ ".xlsx"
-    with open(filename) as f:
-        wb = load_workbook(filename=filename)
-        ws = wb.get_sheet_by_name("Pack List")
-        for box in boxes:
-            upc = box["items"][0]["UPC"]
-            box_id = box["box_number"]
-            quantity = box["items"][0]["quantity"]
-            weight = box["weight"]
-            length = box["length"]
-            width = box["width"]
-            height = box["height"]
+    wb = load_workbook(filename=filename)
+    ws = wb.get_sheet_by_name("Pack List")
 
-            for cell in ws['B']:
-                if(cell.value is not None):
-                    if upc in cell.value:
-                        ws.cell(row=cell.row,column=11+box_id).value = quantity
-                        break
+    for box in boxes:
+        box_id = box["box_number"]
+        weight = box["weight"]
+        length = box["length"]
+        width = box["width"]
+        height = box["height"]
+
+        for item in box["items"]:
+            upc = items["UPC"]
+            quantity = items["quantity"]
+
+            for cell in ws['E']:
+                if(cell.value is not None) and upc in cell.value:
+                    ws.cell(row=cell.row,column=11+box_id).value = quantity
+                    break
                 
-            for cell in ws['J']:
+            for cell in ws['C']:
                 if(cell.value is not None):
                     if "Weight" in cell.value:
                         ws.cell(row=cell.row,column=11+box_id).value = weight
@@ -146,9 +130,9 @@ def complete_shipments():
                         ws.cell(row=cell.row,column=11+box_id).value = width
                     if "height" in cell.value:
                         ws.cell(row=cell.row,column=11+box_id).value = height
-
-        wb.save(filename)
-    return render_template('pages/complete_shipment.html')
+    
+    wb.save(filename)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 @app.route('/shipments', methods=['POST'])
 def upload_shipments():
