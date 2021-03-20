@@ -18,10 +18,11 @@ body {
 }
 /*form styles*/
 #msform {
-	width: 400px;
+	width: 800px;
 	margin: 50px auto;
 	text-align: center;
 	position: relative;
+	font-size: 30px;
 }
 #msform fieldset {
 	background: white;
@@ -45,16 +46,17 @@ body {
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	margin-bottom: 10px;
+	text-align: center;
 	width: 100%;
 	box-sizing: border-box;
 	font-family: montserrat;
-	color: #2C3E50;
-	font-size: 13px;
+	color: white;
+	font-size: 30px;
 }
 /*buttons*/
 .action-button {
 	width: 100px;
-	background: #27AE60;
+	background: #FF7204;
 	font-weight: bold;
 	color: white;
 	border: 0 none;
@@ -64,11 +66,15 @@ body {
 	margin: 10px 5px;
 }
 .action-button:hover, #msform .action-button:focus {
-	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+	box-shadow: 0 0 0 2px white, 0 0 0 4px #FF7204;
+}
+
+.stats-box {
+	color: #2C3E50 !important;
 }
 /*headings*/
 .fs-title {
-	font-size: 15px;
+	font-size: 30px;
 	text-transform: uppercase;
 	color: #2C3E50;
 	margin-bottom: 10px;
@@ -82,7 +88,6 @@ body {
 /*progressbar*/
 #progressbar {
 	margin-bottom: 30px;
-	overflow: hidden;
 	/*CSS counters to number the steps*/
 	counter-reset: step;
 }

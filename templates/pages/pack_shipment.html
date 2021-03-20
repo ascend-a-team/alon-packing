@@ -8,7 +8,7 @@
   <!-- multistep form -->
   <form id="msform">
     <fieldset id="start-packing-fs">
-      <h2 class="fs-title">Shipment ID: <span class="shipment-id-title"></span></h2>
+      <h2 class="fs-title">Shipment ID: <span class="shipment-id-title"></span></h2><br>
       <input
 	id="start-packing"
         type="button"
@@ -58,10 +58,10 @@
     </fieldset>
     <fieldset id="box-info-fs">
       <h2 class="fs-title">Box Info</h2>
-      <input type="number" id="box-weight" placeholder="Weight" />
-      <input type="number" id="box-height" placeholder="Height" />
-      <input type="number" id="box-width" placeholder="Width" />
-      <input type="number" id="box-length" placeholder="Length" />
+      <input type="number" id="box-weight" placeholder="Weight" class="stats-box"/>
+      <input type="number" id="box-height" placeholder="Height" class="stats-box"/>
+      <input type="number" id="box-width" placeholder="Width" class="stats-box"/>
+      <input type="number" id="box-length" placeholder="Length" class="stats-box"/>
       <input
         type="button"
         class="review-box action-button"
@@ -91,8 +91,9 @@
       />
     </fieldset>
     <fieldset id="shipment-confirmation-fs">
-      <h2 class="fs-title">You have finished packing shipment ID: <span class="shipment-id-title"></span></h2>
-      <div>Your download should be starting shortly.</div>
+      <h2 class="fs-title">You have finished packing shipment ID: <span class="shipment-id-title"></span></h2><br>
+      <img src="/static/img/1200px-Eo_circle_orange_white_checkmark.svg.png" alt="Completed."" style="width:100px;height:100px;"><br><br>
+      <div>The packing information has been sent to the seller. You may now exit this page.</div>
     </fieldset>
   </form>
 </div>
