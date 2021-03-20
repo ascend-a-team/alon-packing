@@ -10,10 +10,10 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
-import os
-
-import openpyxl
 from openpyxl import load_workbook
+import os
+import re
+import json
 
 
 #----------------------------------------------------------------------------#
@@ -99,47 +99,58 @@ def shipments_pack():
 
 @app.route('/shipments/complete', methods=['POST'])
 def complete_shipments():
-    boxes = [{
-        "box_number": 1,
-        "items": [{
-            "UPC": "12345789",
-            "quantity": 1
-        }],
-        "weight": 12,
-        "length": 12,
-        "width": 12,
-        "height": 12
-        }]
-    box_offset = 11
+    boxes = request.get_json()
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id'])+ ".xlsx"
+    wb = load_workbook(filename=filename)
+    ws = wb.get_sheet_by_name("Pack List")
 
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id'])
-    with open('fba/' + filename) as f:
-        for box in boxes:
-            pass
-        '''
-        #Open an xlsx for reading
-        wb = load_workbook(filename = dest)
-        #Get the current Active Sheet
-        ws = wb.get_active_sheet()
-        #You can also select a particular sheet
-        #based on sheet name
-        #ws = wb.get_sheet_by_name("Sheet1")
-        ws.cell(row=index,column=7).value = box["items"][0]["quantity"]
-        ws.cell(row=index,column=8).value = box["weight"]
-        wb.save(dest)
-        '''
+    for box in boxes:
+        box_id = box["box_number"]
+        weight = box["weight"]
+        length = box["length"]
+        width = box["width"]
+        height = box["height"]
+
+        for item in box["items"]:
+            upc = items["UPC"]
+            quantity = items["quantity"]
+
+            for cell in ws['E']:
+                if(cell.value is not None) and upc in cell.value:
+                    ws.cell(row=cell.row,column=11+box_id).value = quantity
+                    break
+                
+            for cell in ws['C']:
+                if(cell.value is not None):
+                    if "Weight" in cell.value:
+                        ws.cell(row=cell.row,column=11+box_id).value = weight
+                    if "length" in cell.value:
+                        ws.cell(row=cell.row,column=11+box_id).value = length
+                    if "width" in cell.value:
+                        ws.cell(row=cell.row,column=11+box_id).value = width
+                    if "height" in cell.value:
+                        ws.cell(row=cell.row,column=11+box_id).value = height
+    
+    wb.save(filename)
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 @app.route('/shipments', methods=['POST'])
 def upload_shipments():
     fba_file = request.files['file']
     extension = fba_file.filename[fba_file.filename.rfind("."):]
     # save to disk with session id
-    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id']) + extension
+    filename = os.path.join(app.config['UPLOAD_FOLDER'], flask.session['id']) + ".xlsx"
     fba_file.save(filename)
-
-    wb = load_workbook(filename=filename)
     # count number of units in excel
-    flask.session["unit_count"] = 0 # set unit count
+    wb = load_workbook(filename=filename)
+    ws = wb.get_sheet_by_name("Pack List")
+    unitsRegex = re.compile("^\+?(0|[1-9]\d*)$")
+    for cell in ws['A']:
+        if(cell.value is not None):
+            if "Total Units" in cell.value:
+                units = unitsRegex.match(cell.value)
+                break
+    flask.session["unit_count"] = units # set unit count
 
     return render_template('pages/pack_shipment.html')
 
