@@ -63,6 +63,11 @@ function boxInfo() {
 }
 
 function finishBox() {
+  boxes[boxCount]["weight"] = parseInt($("#box-weight").val());
+  boxes[boxCount]["height"] = parseInt($("#box-height").val());
+  boxes[boxCount]["length"] = parseInt($("#box-length").val());
+  boxes[boxCount]["width"]  = parseInt($("#box-width").val());
+
   $("#units-packed").html("Units Packed: " + itemCount  + " / " + totalUnitCount);
   $("#shipment-summary").append("<div>Box: " + (boxCount + 1) + "</div>");
   boxCount += 1;
@@ -70,5 +75,23 @@ function finishBox() {
 }
 
 function finishShipment() {
-  segueFieldSet($("#complete-shipment-fs"), $("#shipment-confirmation-fs"));
+  for(let i = 0; i < boxCount; i++) {
+    shipment.boxes.push(boxes[i]);
+  }
+  console.log(shipment);
+  $.ajax({
+      url: "/shipment/complete",
+      type: "post",
+      data: shipment.boxes,
+      success: function (response) {
+         // You will get response from your PHP page (what you echo or print)
+        segueFieldSet($("#complete-shipment-fs"), $("#shipment-confirmation-fs"));
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+          alert("Could not complete shipment");
+          segueFieldSet($("#complete-shipment-fs"), $("#shipment-confirmation-fs"));
+          console.log(textStatus, errorThrown);
+      }
+   });
+
 }
