@@ -1,10 +1,13 @@
 {% extends 'layouts/main.html' %} {% block title %}Pack shipment{% endblock %}
 {% block head %} {% endblock%} {% block content %}
 <div id="shipment">
+  <input id="shipment-id" type="hidden" value="{{ data['shipment_id'] }}"/>
+  <input id="unit-count" type="hidden" value="{{ data['unit_count'] }}"/>
+
   <!-- multistep form -->
   <form id="msform">
     <fieldset id="start-packing-fs">
-      <h2 class="fs-title">Shipment ID: 1234798</h2>
+      <h2 class="fs-title">Shipment ID: <span class="shipment-id-title"></span></h2>
       <input
 	id="start-packing"
         type="button"
@@ -75,7 +78,7 @@
     </fieldset>
     <fieldset id="complete-shipment-fs">
       <h2 class="fs-title">Complete Box</h2>
-      <h3 id="units-packed">Units Packed: 30 / 50</h3>
+      <h3 id="units-packed">Units Packed: 30 / <span id="unit-count-title"></span></h3>
       <div id="shipment-summary">
       </div>
       <input
@@ -91,7 +94,7 @@
       />
     </fieldset>
     <fieldset id="shipment-confirmation-fs">
-      <h2 class="fs-title">You have finished packing shipment ID: 11111</h2>
+      <h2 class="fs-title">You have finished packing shipment ID: <span class="shipment-id-title"></span></h2>
       <div>Your download should be starting shortly.</div>
     </fieldset>
   </form>

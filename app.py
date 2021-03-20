@@ -90,12 +90,16 @@ def scan():
         flash("Session not found")
     '''
     return render_template('pages/scan_item.html')
-    
+
 @app.route('/shipments/pack', methods=['GET'])
 def shipments_pack():
     # get count of units
     # return to template
-    return render_template('pages/pack_shipment.html')
+    data = {
+        "shipment_id": flask.session["shipment_id"],
+        "unit_count": flask.session["unit_count"]
+    }
+    return render_template('pages/pack_shipment.html', data=data)
 
 @app.route('/shipments/complete', methods=['POST'])
 def complete_shipments():
@@ -112,14 +116,16 @@ def complete_shipments():
         height = box["height"]
 
         for item in box["items"]:
-            upc = items["UPC"]
-            quantity = items["quantity"]
+            upc = item["UPC"]
+            quantity = item["quantity"]
 
             for cell in ws['E']:
                 if(cell.value is not None) and upc in cell.value:
-                    ws.cell(row=cell.row,column=11+box_id).value = quantity
+                    cell_quantity = ws.cell(row=cell.row,column=11+box_id).value or 0
+                    cell_quantity += quantity
+                    ws.cell(row=cell.row,column=11+box_id).value = cell_quantity
                     break
-                
+
             for cell in ws['C']:
                 if(cell.value is not None):
                     if "Weight" in cell.value:
@@ -130,9 +136,9 @@ def complete_shipments():
                         ws.cell(row=cell.row,column=11+box_id).value = width
                     if "height" in cell.value:
                         ws.cell(row=cell.row,column=11+box_id).value = height
-    
+
     wb.save(filename)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route('/shipments', methods=['POST'])
 def upload_shipments():
@@ -144,19 +150,17 @@ def upload_shipments():
     # count number of units in excel
     wb = load_workbook(filename=filename)
     ws = wb.get_sheet_by_name("Pack List")
-    unitsRegex = re.compile("^\+?(0|[1-9]\d*)$")
+    pattern = "Total Units: (?P<units>[0-9]+)$"
+
     for cell in ws['A']:
-        if(cell.value is not None):
-            if "Total Units" in cell.value:
-                units = unitsRegex.match(cell.value)
+        if(cell.value is not None) and "Total Units" in cell.value:
+                for match in re.finditer(pattern, cell.value):
+                    units = int(match["units"])
                 break
     flask.session["unit_count"] = units # set unit count
+    flask.session["shipment_id"] = ws['B'][0].value
 
-    return render_template('pages/pack_shipment.html')
-
-@app.route('/shipments/box', methods=['POST'])
-def add_box():
-    return redirect('/shipments')
+    return flask.redirect('/shipments/pack')
 
 
 # Error handlers.

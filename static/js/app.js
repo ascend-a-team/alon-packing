@@ -6,8 +6,12 @@ let shipment = {
 
 let boxCount = 0;
 let itemCount = 0;
-let totalUnitCount = 50;
 let boxes = {};
+let shipment_id = $("#shipment-id").val();
+let totalUnitCount = parseInt($("#unit-count").val());
+
+$(".shipment-id-title").html(shipment_id);
+$("#unit-id-title").html("Shipment ID: " + shipment_id);
 
 $('#start-packing').click(startPacking);
 $('#scan-item').click(confirmScan);
@@ -17,6 +21,8 @@ $('.add-item').click(addItem);
 $('#box-info').click(boxInfo);
 $('#finish-box').click(finishBox);
 $('#finish-shipment').click(finishShipment);
+
+
 
 function startPacking() {
   boxes[boxCount] = {box_number: boxCount,items: [], weight: 0, height: 0, length: 0, width: 0};
@@ -37,7 +43,8 @@ function addItem() {
 function confirmScan() {
   let items = boxes[boxCount].items;
   items.push({
-    upc: itemCount
+    upc: itemCount,
+    quantity: 1
   });
   $("#item-upc").html("<div>Item UPC: " + itemCount + " succesfully added!</div>");
   itemCount += 1;
@@ -80,9 +87,11 @@ function finishShipment() {
   }
   console.log(shipment);
   $.ajax({
-      url: "/shipment/complete",
+      url: "/shipments/complete",
       type: "post",
-      data: shipment.boxes,
+      dataType: "json",
+      contentType: 'application/json',
+      data: JSON.stringify(shipment.boxes),
       success: function (response) {
          // You will get response from your PHP page (what you echo or print)
         segueFieldSet($("#complete-shipment-fs"), $("#shipment-confirmation-fs"));
