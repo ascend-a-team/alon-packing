@@ -46,8 +46,8 @@ var App = {
                 closeButton.removeEventListener('click', closeClick);
                 cancelCb();
             });
-            var test = document.querySelector(".test");
-            test.replaceWith(this._overlay);
+            var scanner = document.querySelector(".scanner");
+            scanner.replaceWith(this._overlay);
         } else {
             var closeButton = document.querySelector('.overlay__close');
             closeButton.addEventListener('click', function closeClick() {

@@ -19,12 +19,12 @@ $('#finish-box').click(finishBox);
 $('#finish-shipment').click(finishShipment);
 
 function startPacking() {
-  boxes[boxCount] = {items: [], weight: 0, height: 0, length: 0, width: 0};
+  boxes[boxCount] = {box_number: boxCount,items: [], weight: 0, height: 0, length: 0, width: 0};
   segueFieldSet($("#start-packing-fs"), $("#scan-item-fs"));
 }
 
 function addBox() {
-  boxes[boxCount] = {items: [], weight: 0, height: 0, length: 0, width: 0};
+  boxes[boxCount] = {box_number: boxCount, items: [], weight: 0, height: 0, length: 0, width: 0};
   $("#box-scan-number").html("Box " + (boxCount + 1));
   segueFieldSet($("#complete-shipment-fs"), $("#scan-item-fs"));
 }
@@ -93,5 +93,4 @@ function finishShipment() {
           console.log(textStatus, errorThrown);
       }
    });
-
 }
