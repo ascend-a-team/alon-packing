@@ -1,13 +1,13 @@
 var Quagga = window.Quagga;
-var App = {
+var ScannerApp = {
     _scanner: null,
     init: function() {
-        this.attachListeners();
+        //this.activateScanner();
     },
     activateScanner: function() {
         var scanner = this.configureScanner('.overlay__content'),
             onDetected = function (result) {
-                document.querySelector('input.isbn').value = result.codeResult.code;
+                $("#current-upc").val(result.codeResult.code);
                 stop();
             }.bind(this),
             stop = function() {
@@ -15,12 +15,21 @@ var App = {
                 scanner.removeEventListener('detected', onDetected);
                 this.hideOverlay();
                 this.attachListeners();
+                $('#scan-item').click();
             }.bind(this);
 
         this.showOverlay(stop);
         scanner.addEventListener('detected', onDetected).start();
     },
+    deactivateScanner: function() {
+        //var scanner = this.configureScanner('.overlay__content'),
+        scanner.stop();  // should also clear all event-listeners?
+        scanner.removeEventListener('detected', onDetected);
+        this.hideOverlay();
+        $('#scan-item').click();
+    },
     attachListeners: function() {
+      /*
         var self = this,
             button = document.querySelector('.input-field input + button.scan');
 
@@ -29,6 +38,7 @@ var App = {
             button.removeEventListener("click", onClick);
             self.activateScanner();
         });
+        */
     },
     showOverlay: function(cancelCb) {
         if (!this._overlay) {
@@ -66,12 +76,12 @@ var App = {
         if (!this._scanner) {
             this._scanner = Quagga
                 .decoder({readers: ['ean_reader']})
-                .locator({patchSize: 'medium'})
+                .locator({patchSize: 'large', halfSample: true})
                 .fromSource({
                     target: selector,
                     constraints: {
-                        width: 800,
-                        height: 600,
+                        width: 400,
+                        height: 300,
                         facingMode: "environment"
                     }
                 });
@@ -80,6 +90,6 @@ var App = {
     }
 };
 
-App.init();
+ScannerApp.init();
 
 

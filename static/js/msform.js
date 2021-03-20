@@ -4,6 +4,7 @@ var left, opacity, scale; //fieldset properties which we will animate
 var animating; //flag to prevent quick multi-click glitches
 
 function segueFieldSet(curr, next_fs) {
+  //$(next_fs).on("show", function(){console.log("shown")});
   $(next_fs).show();
   nextAnimate(curr, next_fs);
 }

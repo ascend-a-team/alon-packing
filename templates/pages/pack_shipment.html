@@ -3,6 +3,7 @@
 <div id="shipment">
   <input id="shipment-id" type="hidden" value="{{ data['shipment_id'] }}"/>
   <input id="unit-count" type="hidden" value="{{ data['unit_count'] }}"/>
+  <input id="current-upc" type="hidden" value=""/>
 
   <!-- multistep form -->
   <form id="msform">
@@ -17,17 +18,13 @@
     </fieldset>
     <fieldset id="scan-item-fs">
       <h2 class="fs-title" id="box-scan-number">Box 1</h2>
-      <div class="input-field">
-          <label for="isbn_input">EAN:</label>
-          <input id="isbn_input" class="isbn" type="text" />
-          <button type="button" class="button scan"> Scan </button>
-      </div>
       <div class="scanner"></div>
       <input
 	id="scan-item"
         type="button"
         class="action-button"
         value="Scan Item"
+	style="display:none;"
       />
     </fieldset>
     <fieldset id="item-confirmation-fs">
@@ -100,6 +97,7 @@
   </form>
 </div>
 {% endblock %} {% block scripts %}
+<script type="text/javascript" src="/static/js/scan-to-input.js" defer></script>
 <script type="text/javascript" src="/static/js/msform.js"></script>
 <script type="text/javascript" src="/static/js/app.js"></script>
 {% endblock %}

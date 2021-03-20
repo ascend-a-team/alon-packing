@@ -13,16 +13,36 @@ let totalUnitCount = parseInt($("#unit-count").val());
 $(".shipment-id-title").html(shipment_id);
 $("#unit-id-title").html("Shipment ID: " + shipment_id);
 
+(function ($) {
+  $.each(['show', 'hide'], function (i, ev) {
+    var el = $.fn[ev];
+    $.fn[ev] = function () {
+      this.trigger(ev);
+      el.apply(this, arguments);
+      return el;
+    };
+  });
+})(jQuery);
+
+$("#scan-item-fs").on("show", function(){
+  console.log("scan-item-fs show")
+  ScannerApp.activateScanner();
+});
+
+$("#scan-item-fs").on("hide", function(){
+  console.log("scan-item-fs hide")
+  // ScannerApp.deactivateScanner();
+});
+
 $('#start-packing').click(startPacking);
 $('#scan-item').click(confirmScan);
+$('#skip-scan').click(skipScan);
 $('.review-box').click(reviewBox);
 $('#add-box').click(addBox);
 $('.add-item').click(addItem);
 $('#box-info').click(boxInfo);
 $('#finish-box').click(finishBox);
 $('#finish-shipment').click(finishShipment);
-
-
 
 function startPacking() {
   boxes[boxCount] = {box_number: boxCount,items: [], weight: 0, height: 0, length: 0, width: 0};
@@ -40,14 +60,20 @@ function addItem() {
   segueFieldSet(srcFs, $("#scan-item-fs"));
 }
 
+function skipScan() {
+  $("#item-upc").html("");
+  segueFieldSet($("#scan-item-fs"), $("#item-confirmation-fs"));
+}
+
 function confirmScan() {
   let items = boxes[boxCount].items;
+  let upc = $("#current-upc").val();
   items.push({
-    upc: itemCount,
+    UPC: upc,
     quantity: 1
   });
-  $("#item-upc").html("<div>Item UPC: " + itemCount + " succesfully added!</div>");
   itemCount += 1;
+  $("#item-upc").html("<div>Item UPC: " + upc + " succesfully added!</div>");
   segueFieldSet($("#scan-item-fs"), $("#item-confirmation-fs"));
 }
 
@@ -56,7 +82,7 @@ function reviewBox() {
   let inner = $("<div></div>");
   for (let i = 0; i < items.length; i++) {
     let item = items[i];
-    inner.append("<div>UPC: " + item.upc + "</div>");
+    inner.append("<div>UPC: " + item.UPC + "</div>");
   }
 
   $("#box-summary").html(inner);

@@ -121,21 +121,21 @@ def complete_shipments():
 
             for cell in ws['E']:
                 if(cell.value is not None) and upc in cell.value:
-                    cell_quantity = ws.cell(row=cell.row,column=11+box_id).value or 0
+                    cell_quantity = ws.cell(row=cell.row,column=12+box_id).value or 0
                     cell_quantity += quantity
-                    ws.cell(row=cell.row,column=11+box_id).value = cell_quantity
+                    ws.cell(row=cell.row,column=12+box_id).value = cell_quantity
                     break
 
             for cell in ws['C']:
                 if(cell.value is not None):
                     if "Weight" in cell.value:
-                        ws.cell(row=cell.row,column=11+box_id).value = weight
+                        ws.cell(row=cell.row,column=12+box_id).value = weight
                     if "length" in cell.value:
-                        ws.cell(row=cell.row,column=11+box_id).value = length
+                        ws.cell(row=cell.row,column=12+box_id).value = length
                     if "width" in cell.value:
-                        ws.cell(row=cell.row,column=11+box_id).value = width
+                        ws.cell(row=cell.row,column=12+box_id).value = width
                     if "height" in cell.value:
-                        ws.cell(row=cell.row,column=11+box_id).value = height
+                        ws.cell(row=cell.row,column=12+box_id).value = height
 
     wb.save(filename)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
@@ -161,6 +161,12 @@ def upload_shipments():
     flask.session["shipment_id"] = ws['B'][0].value
 
     return flask.redirect('/shipments/pack')
+
+@app.route('/shipments/download', methods=['GET'])
+def download_shipment():
+    disk_filename = "fba/" + flask.session["id"] + ".xlsx"
+    serv_filename = flask.session["shipment_id"] + ".xlsx"
+    return flask.send_file(disk_filename, attachment_filename=serv_filename, as_attachment=True)
 
 
 # Error handlers.
